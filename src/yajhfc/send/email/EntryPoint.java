@@ -9,6 +9,7 @@ import yajhfc.launch.Launcher2;
 import yajhfc.options.PanelTreeNode;
 import yajhfc.plugin.PluginManager;
 import yajhfc.plugin.PluginUI;
+import yajhfc.printerport.batch.BatchPortOptionsPanel;
 import yajhfc.printerport.batch.BatchPrinterOptions;
 import yajhfc.printerport.batch.TCPBatchPort;
 import yajhfc.send.SendControllerMailer;
@@ -48,16 +49,20 @@ public class EntryPoint {
 
 			@Override
 			public PanelTreeNode createOptionsPanel(PanelTreeNode parent) {
-				/*
-				 * This method must return a PanelTreeNode as shown below
-				 * or null to not create an options page
-				 */
-				return new PanelTreeNode(
+			    PanelTreeNode batchNode = new PanelTreeNode(
+                        parent, // Always pass the parent as first parameter
+                        new BatchPortOptionsPanel(), // The actual UI component that implements the options panel. 
+                                                // This object *must* implement the OptionsPage interface.
+                        _("Batch fax printer port"), // The text displayed in the tree view for this options page
+                        Utils.loadIcon("general/Print"));            // The icon displayed in the tree view for this options page
+			    batchNode.addChild(new PanelTreeNode(
 						parent, // Always pass the parent as first parameter
 						new EMailOptionsPanel(), // The actual UI component that implements the options panel. 
 						                        // This object *must* implement the OptionsPage interface.
-						_("e-mail sender"), // The text displayed in the tree view for this options page
-						null);            // The icon displayed in the tree view for this options page
+						_("SMTP settings"), // The text displayed in the tree view for this options page
+						Utils.loadIcon("general/ComposeMail")));            // The icon displayed in the tree view for this options page
+			    
+			    return batchNode;
 			}
 
 			@Override

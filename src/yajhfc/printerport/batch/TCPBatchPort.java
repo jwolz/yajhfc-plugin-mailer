@@ -93,10 +93,13 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
             if (archiver != null)
                 archiver.saveFaxAsError();
         }
+        
+        boolean mailSuccess = false;
         if (bpo.enableMailer && mailRecipients.size()>0) {
             if (SendControllerMailer.INSTANCE != null)
                 try {
                     SendControllerMailer.INSTANCE.mailToRecipients(sendController, mailRecipients);
+                    mailSuccess = true;
                 } catch (MailException e) {
                     dialogs.showExceptionDialog("Error sending mail to " + mailRecipients, e);
                 }
@@ -118,6 +121,11 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                 dialogs.getMessageWriter().println(_("Error: Invalid data specified for fax, discarding print job."));
                 if (archiver != null)
                     archiver.saveFaxAsError();
+            }
+        } else {
+            if (mailSuccess) {
+                if (archiver != null)
+                    archiver.saveFaxAsSuccess();
             }
         }
         log.info("Finished. Message log is: " + dialogs.getMessageLog());

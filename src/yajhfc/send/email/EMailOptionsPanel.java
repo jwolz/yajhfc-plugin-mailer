@@ -32,6 +32,7 @@ import javax.mail.internet.MimeMessage;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -42,6 +43,7 @@ import yajhfc.SenderIdentity;
 import yajhfc.Utils;
 import yajhfc.options.AbstractOptionsPanel;
 import yajhfc.options.OptionsWin;
+import yajhfc.util.ComponentEnabler;
 import yajhfc.util.ExcDialogAbstractAction;
 import yajhfc.util.IntVerifier;
 import yajhfc.util.ProgressDialog;
@@ -49,12 +51,6 @@ import yajhfc.util.ProgressWorker;
 
 import com.sun.mail.smtp.SMTPTransport;
 
-/**
- * Implements a crude and simple UI to set the three example options.
- * 
- * @author jonas
- *
- */
 public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {   
 
     public EMailOptionsPanel() {
@@ -166,9 +162,11 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
 
         add(checkAuth, "1,4,l,c");
         add(checkTLS, "3,4,5,4,l,c");
-        Utils.addWithLabel(this, textUser, _("User name:"), "1,7,f,c");
-        Utils.addWithLabel(this, passwordField, _("Password:"), "3,7,5,7,f,c");
+        JLabel lblUser = Utils.addWithLabel(this, textUser, _("User name:"), "1,7,f,c");
+        JLabel lblPass = Utils.addWithLabel(this, passwordField, _("Password:"), "3,7,5,7,f,c");
         add(new JButton(testAction), "1,9,f,f");
+
+        ComponentEnabler.installOn(checkAuth, true, lblUser, lblPass, textUser, passwordField);
     }
 
 
