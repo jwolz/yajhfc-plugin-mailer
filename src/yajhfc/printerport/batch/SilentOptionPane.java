@@ -1,8 +1,8 @@
 package yajhfc.printerport.batch;
 
 import java.awt.Window;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import yajhfc.send.email.EntryPoint;
 import yajhfc.ui.swing.SwingYajOptionPane;
@@ -15,29 +15,16 @@ import yajhfc.ui.swing.SwingYajOptionPane;
  *
  */
 public class SilentOptionPane extends SwingYajOptionPane {
+    private static final Logger log = Logger.getLogger(SilentOptionPane.class.getName());
 
-    protected final StringWriter messageLog;
-    protected final PrintWriter messageWriter;
-    
-    public StringWriter getMessageLog() {
-        return messageLog;
-    }
-    
-    public PrintWriter getMessageWriter() {
-        return messageWriter;
-    }
-    
     public SilentOptionPane(Window parent) {
         super(parent);
-        messageLog = new StringWriter();
-        messageWriter = new PrintWriter(messageLog);
+
     }
 
     @Override
     public void showExceptionDialog(String title, String message, Exception exc) {
-        showMessageDialog(message, title, 0);
-        exc.printStackTrace(messageWriter);
-        messageWriter.println();
+        log.log(Level.SEVERE, title + ": " + message, exc);
     }
 
     @Override
@@ -58,8 +45,7 @@ public class SilentOptionPane extends SwingYajOptionPane {
 
     @Override
     public void showMessageDialog(String message, String title, int messageType) {
-        messageWriter.append(title).append(": ").append(message);
-        messageWriter.println();
+        log.log(Level.INFO, title + ": " + message);
     }
 
     
