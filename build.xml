@@ -1,0 +1,160 @@
+<project name="yajhfc-plugin-mail" default="dist" basedir=".">
+	<description>
+        YajHFC Mail and Batch Printer Plugin build file
+    </description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build.compiler" value="modern"/>
+	<property name="build.sysclasspath" value="ignore"/>
+
+	<property file="build.properties"/>
+	<property name="yajhfc-jar" location="../yajhfc/build/yajhfc.jar"/>
+
+	<property name="build" location="build"/>
+	<property name="dist-extra" location="dist"/>
+	<property name="jar-extra" location="jar"/>
+	<property name="jar-output" location="${build}/yajhfc-plugin-mail.jar"/>
+	<property name="srczip-output" location="${build}/yajhfc-plugin-mail-src.zip"/>
+	<property name="binzip-output" location="${build}/yajhfc-plugin-mail.zip"/> 
+	<property name="gettext-path" location="/usr/bin"/>
+	<property name="javamail.path" location="lib"/>
+	<property name="javamail.jar" value="mail.jar"/>
+
+	<property environment="env"/>
+	
+	<target name="init">
+	
+		<fail message="YajHFC jar not found. Edit build.properties to specify the correct location.">
+			<condition>
+				<not>
+				<available file="${yajhfc-jar}"/>
+				</not>
+			</condition>
+		</fail>
+		
+		<fail message="Javamail jar not found at ${javamail.path}/${javamail.jar}. Edit build.properties to specify the correct location.">
+			<condition>
+				<not>
+				<available file="${javamail.path}/${javamail.jar}"/>
+				</not>
+			</condition>
+		</fail>
+
+		<!-- Find out if we have valid, precompiled translations -->
+		<uptodate property="i18n.havePrecompiled">
+			<srcfiles dir="i18n" includes="*_*.po"/>
+			<!-- changed to .properties <compositemapper>
+				<mapper type="glob" from="*.po" to="bin/yajhfc/phonebook/outlook/i18n/*.class" />
+				<mapper type="glob" from="*.po" to="bin/yajhfc/phonebook/outlook/i18n/*$1.class" />
+			</compositemapper> -->
+			<mapper type="glob" from="*.po" to="bin/yajhfc/pdf/i18n/*.properties" />
+		</uptodate>
+		
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+		
+
+	</target>
+
+	<target name="compile" depends="init" description="compile the source code" >
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" includes="**/*.java" destdir="${build}" source="1.5" target="1.5" encoding="utf-8" debug="true" debuglevel="lines,source">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement location="${yajhfc-jar}"/>
+				<pathelement location="${javamail.path}/${javamail.jar}"/>
+			</classpath>
+		</javac>
+
+		<manifest file="${build}/MANIFEST.MF">
+		   <attribute name="YajHFC-Plugin-InitClass" value="yajhfc.send.email.EntryPoint"/>
+		   <attribute name="Class-Path" value="lib/${javamail.jar}"/>
+		</manifest>
+	</target>
+
+	<target name="i18n" unless="i18n.havePrecompiled" depends="init" description="compile the translations">
+		<mkdir dir="i18n/bin/yajhfc/pdf/i18n"/>
+		<apply executable="${gettext-path}/msgcat" dir="i18n" parallel="false">
+			
+			<arg value="--properties-output"/>
+			<srcfile/>
+			
+			<fileset dir="i18n" includes="*_*.po"/>
+			<mapper type="glob" id="properties-out" from="*.po" to="i18n/bin/yajhfc/pdf/i18n/*.properties" />
+			<redirector>
+			   <outputmapper refid="properties-out"/>
+			</redirector>
+		</apply> 
+	</target>
+	
+
+	<target name="merge-po" description="Run xgettext and merge po files">	
+		<fileset id="i18n.srcfiles" dir="${src}" includes="**/*.java"/>
+		<pathconvert pathsep="${line.separator}" property="i18n.srcfiles.lines" refid="i18n.srcfiles" />
+		
+		<apply executable="${gettext-path}/xgettext" dir="i18n" parallel="true" addsourcefile="false">
+			
+			<arg value="-k_"/>
+			<arg value="--from-code=utf-8"/>
+			
+			<arg value="-oMessages.po"/>
+			<arg value="-f-"/>
+			<!-- <srcfile prefix="../${src}/"/>-->
+			<redirector inputstring="${i18n.srcfiles.lines}" />
+			
+			<fileset refid="i18n.srcfiles"/>
+			<mergemapper to="i18n/Messages.po"/>
+		</apply>
+		<apply executable="${gettext-path}/msgmerge" dir="i18n" parallel="false">
+			
+			<arg value="-N"/>
+			<arg value="-U"/>
+			<srcfile/>
+			<arg value="Messages.po"/>
+			
+			<fileset dir="i18n" includes="*_*.po"/>
+			<identitymapper/>
+		</apply>
+	</target>
+
+	<target name="dist" depends="compile,i18n" description="generate the distribution" >
+		<jar jarfile="${jar-output}" manifest="${build}/MANIFEST.MF">
+			<fileset dir="${build}" includes="yajhfc/**,com/**"/>
+			<!-- <fileset dir="i18n/bin" includes="**/*.class,**/*.properties"/> -->
+			<fileset dir="${jar-extra}"/>
+		</jar>
+		
+		<zip destfile="${binzip-output}"> 
+			<zipfileset dir="${dist-extra}" />
+			<zipfileset dir="." includes="COPYING" />
+			<zipfileset dir="${build}" includes="*.jar" />  
+			<zipfileset dir="${javamail.path}" prefix="lib">
+				<include name="${javamail.jar}"/>
+			</zipfileset>
+		</zip>  
+	</target>
+
+	<target name="sourcedist" depends="init" description="generate the source distribution" >
+		<zip destfile="${srczip-output}">
+			<zipfileset dir="." prefix="yajhfc-pdf-plugin/">
+				<exclude name="bin/"/>
+				<exclude name="build/"/>
+				<exclude name="setup/Output/"/>
+				<exclude name="**/*.jar"/>
+				<exclude name="**/*.log"/>
+				<exclude name="**/*~"/>
+				<exclude name="**/.hg/**"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="fulldist" depends="dist,sourcedist" description="generate both source and binary distributions"/>
+
+	<target name="clean" description="clean up" >
+		<!-- Delete the ${build} directory tree and the jar file -->
+		<delete dir="${build}"/>
+		<delete file="${jar-output}"/>
+	</target>
+</project>
