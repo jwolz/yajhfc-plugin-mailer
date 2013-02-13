@@ -55,7 +55,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
     protected void submitFax(Socket sock) throws IOException {
         Handler memHandler = new StringHandler();
         memHandler.setLevel(Level.INFO);
-        Logger[] batchLoggers = {
+        final Logger[] batchLoggers = {
                 Logger.getLogger("yajhfc.printerport"),
                 Logger.getLogger("yajhfc.send"),
                 Logger.getLogger("yajhfc.file")
