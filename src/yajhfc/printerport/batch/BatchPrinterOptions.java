@@ -28,6 +28,9 @@ public class BatchPrinterOptions extends AbstractFaxOptions {
     public boolean enableFailDir = false;
     public String failDir = "";
     
+    public boolean enableFailMail = false;
+    public String failRecipient = "";
+    
     public int serverID = -1;
     public int identityID = -1;
     
