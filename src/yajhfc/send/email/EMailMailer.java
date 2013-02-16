@@ -50,27 +50,48 @@ public class EMailMailer extends SendControllerMailer {
             return "";
         }
     }
+    
+    protected EMailOptions theOptions;
 
+    public EMailMailer() {
+        super();
+    }
+  
+    public EMailMailer(EMailOptions options) {
+        super();
+        this.theOptions = options;
+    }
+  
+    protected EMailOptions getOptions() {
+        if (theOptions == null)
+            return EntryPoint.getOptions();
+        else
+            return theOptions;
+    }
+    
     
     /* (non-Javadoc)
      * @see yajhfc.send.SendControllerMailer#mailToRecipients(yajhfc.send.SendController, java.util.Collection)
      */
     @Override
     public boolean mailToRecipients(SendController controller, Collection<String> mailAdresses) throws MailException {
+        return mailToRecipients(controller, controller.getSubject(), controller.getComment(), mailAdresses);
+    }
+
+    @Override
+    public boolean mailToRecipients(String subject, String body, Collection<String> mailAdresses, File attachment,
+            String attachmentName, SenderIdentity fromIdentity) throws MailException {
+        EMailOptions eo = getOptions();
+        
+        if (fromIdentity.FromEMail == null || fromIdentity.FromEMail.length() == 0) {
+            throw new MailException("To send a mail, you have to specify a sender e-mail address in your sender identity under \"Cover Page & Identities\".");
+        }
         try {
-            EMailOptions eo = EntryPoint.getOptions();
-            SenderIdentity id = controller.getIdentity();
-            MessageFormat fromFormat = new MessageFormat("doc_{0,date,yyyy-MM-dd_HH-mm-ss}.pdf");
-            final Date sendDate = new Date();
-            
-            File tempFile = File.createTempFile("attachment", ".pdf");
-            MultiFileConverter.convertTFLItemsToSingleFile(controller.getFiles(), tempFile, MultiFileConvFormat.PDF, controller.getPaperSize());
-            ShutdownManager.deleteOnExit(tempFile);
-            
             Properties props = eo.toProperties();
             Session session = Session.getInstance(props, null);
+            session.setDebug(Utils.debugMode);
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(id.FromEMail, EMailMailer.getSenderName(id)));
+            msg.setFrom(new InternetAddress(fromIdentity.FromEMail, EMailMailer.getSenderName(fromIdentity)));
 
             List<Address> recipients = new ArrayList<Address>();
             for (String a : mailAdresses) {
@@ -80,23 +101,26 @@ public class EMailMailer extends SendControllerMailer {
             }
             msg.setRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
 
-            msg.setSubject(controller.getSubject());
+            msg.setSubject(subject);
 
-            // Attach the specified file.
-            // We need a multipart message to hold the attachment.
-            MimeBodyPart mbp1 = new MimeBodyPart();
-            mbp1.setText(controller.getComment());
-            MimeBodyPart mbp2 = new MimeBodyPart();
-            mbp2.attachFile(tempFile);
-            mbp2.setFileName(fromFormat.format(new Object[] { sendDate }));
-            MimeMultipart mp = new MimeMultipart();
-            mp.addBodyPart(mbp1);
-            mp.addBodyPart(mbp2);
-            msg.setContent(mp);
-
+            if (attachment != null) {
+                // Attach the specified file.
+                // We need a multipart message to hold the attachment.
+                MimeBodyPart mbp1 = new MimeBodyPart();
+                mbp1.setText(body);
+                MimeBodyPart mbp2 = new MimeBodyPart();
+                mbp2.attachFile(attachment);
+                if (attachmentName != null)
+                    mbp2.setFileName(attachmentName);
+                MimeMultipart mp = new MimeMultipart();
+                mp.addBodyPart(mbp1);
+                mp.addBodyPart(mbp2);
+                msg.setContent(mp);
+            } else {
+                msg.setText(body);
+            }
 
             msg.setHeader("X-Mailer", Utils.AppShortName + " " + Utils.AppVersion);
-            msg.setSentDate(sendDate);
 
             SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
             try {
@@ -108,11 +132,36 @@ public class EMailMailer extends SendControllerMailer {
             } finally {
                 t.close();
             }
-            tempFile.delete();
+
             return true;
         } catch (Exception e) {
             throw new MailException(e);
         } 
+    }
+
+    @Override
+    public MessageFormat getAttachmentNameFormat() {
+        return new MessageFormat("doc_{0,date,yyyy-MM-dd_HH-mm-ss}.pdf");
+    }
+
+    @Override
+    public boolean mailToRecipients(SendController controller, String subject, String body, Collection<String> mailAdresses) throws MailException {
+        SenderIdentity id = controller.getIdentity();
+        MessageFormat fromFormat = getAttachmentNameFormat();
+        final Date sendDate = new Date();
+        
+        File tempFile;
+        try {
+            tempFile = File.createTempFile("attachment", ".pdf");
+            ShutdownManager.deleteOnExit(tempFile);
+            MultiFileConverter.convertTFLItemsToSingleFile(controller.getFiles(), tempFile, MultiFileConvFormat.PDF, controller.getPaperSize());
+        } catch (Exception e) {
+            throw new MailException("Error creating PDF for fax", e);
+        } 
+        
+        boolean rv = mailToRecipients(subject, body, mailAdresses, tempFile, fromFormat.format(new Object[] { sendDate }), id);
+        tempFile.delete();
+        return rv;
     }
 
 }

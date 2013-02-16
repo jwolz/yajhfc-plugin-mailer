@@ -76,11 +76,12 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
             sendController.addSendControllerListener(this);
 
             SendFaxArchiver archiver = null;
-            if (bpo.enableSuccessDir || bpo.enableFailDir) {
+            if (bpo.enableSuccessDir || bpo.enableFailDir || bpo.enableFailMail) {
                 String successDir = (bpo.enableSuccessDir ? bpo.successDir : null);
                 String errorDir = (bpo.enableFailDir ? bpo.failDir : null);
+                String errorMail = (bpo.enableFailMail ? bpo.failRecipient : null);
 
-                archiver = new SendFaxArchiver(sendController, dialogs, successDir, errorDir, memHandler);
+                archiver = new SendFaxArchiver(sendController, dialogs, successDir, errorDir, errorMail, memHandler);
             } 
 
             // n.b.: All documents should have been added at this point

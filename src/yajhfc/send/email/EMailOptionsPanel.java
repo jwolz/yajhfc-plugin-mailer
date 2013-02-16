@@ -22,13 +22,8 @@ import info.clearthought.layout.TableLayout;
 
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
-import java.util.Date;
-import java.util.Properties;
+import java.util.Collections;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,6 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import yajhfc.FaxOptions;
+import yajhfc.Password;
 import yajhfc.SenderIdentity;
 import yajhfc.Utils;
 import yajhfc.options.AbstractOptionsPanel;
@@ -48,8 +44,6 @@ import yajhfc.util.ExcDialogAbstractAction;
 import yajhfc.util.IntVerifier;
 import yajhfc.util.ProgressDialog;
 import yajhfc.util.ProgressWorker;
-
-import com.sun.mail.smtp.SMTPTransport;
 
 public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {   
 
@@ -87,16 +81,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
 
                     @Override
                     public void doWork() {
-                        try{
-                            Properties props = eo.toProperties();
-                            Session session = Session.getInstance(props, null);
-                            Message msg = new MimeMessage(session);
-                            msg.setFrom(new InternetAddress(id.FromEMail, EMailMailer.getSenderName(id)));
-
-                            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
-
-                            msg.setSubject(_("YajHFC test mail"));
-
+                        try {
                             String text = 
                                     "This is a test e-mail message sent from " + Utils.AppShortName + " " + Utils.AppVersion + "\n\n" +
                                             "Settings used:\n" +
@@ -105,24 +90,9 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
                                             "Allow TLS?:          " + eo.tls + "\n" +
                                             "Use authentication?: " + eo.auth + "\n" +
                                             "User name for auth:  " + eo.user + "\n";
-
-                            msg.setText(text);
-
-                            msg.setHeader("X-Mailer", Utils.AppShortName + " " + Utils.AppVersion);
-                            msg.setSentDate(new Date());
-
-                            SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
-                            try {
-                                if (eo.auth)
-                                    t.connect(eo.user, eo.password.getPassword());
-                                else
-                                    t.connect();
-                                t.sendMessage(msg, msg.getAllRecipients());
-                            } finally {
-                                t.close();
-                            }
-
-                            success = true;
+                            
+                            EMailMailer mailer = new EMailMailer(eo);
+                            success = mailer.mailToRecipients(_("YajHFC test mail"), text, Collections.singletonList(recipient), null, null, id);
                         } catch (Exception e1) {
                             showExceptionDialog(_("Error sending the message:"), e1);
                         }
@@ -174,6 +144,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         eo.hostname = textHost.getText();
         eo.port = getPort();
         eo.user = textUser.getText();
+        eo.password.setPassword(new String(passwordField.getPassword()));
 
         eo.ssl = checkSSL.isSelected();
         eo.auth = checkAuth.isSelected();
@@ -196,6 +167,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         textHost.setText(eo.hostname);
         textPort.setText(String.valueOf(eo.port));
         textUser.setText(eo.user);
+        passwordField.setText(eo.password.getPassword());
 
         checkSSL.setSelected(eo.ssl);
         checkAuth.setSelected(eo.auth);
