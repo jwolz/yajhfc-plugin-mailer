@@ -34,7 +34,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import yajhfc.FaxOptions;
-import yajhfc.Password;
 import yajhfc.SenderIdentity;
 import yajhfc.Utils;
 import yajhfc.options.AbstractOptionsPanel;

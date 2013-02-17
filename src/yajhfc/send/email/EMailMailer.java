@@ -120,6 +120,7 @@ public class EMailMailer extends SendControllerMailer {
                 msg.setText(body);
             }
 
+            msg.setSentDate(new Date());
             msg.setHeader("X-Mailer", Utils.AppShortName + " " + Utils.AppVersion);
 
             SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
