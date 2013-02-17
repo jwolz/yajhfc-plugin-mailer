@@ -82,6 +82,12 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         return null;
     }
     
+    private JCheckBox createCheckBox(String label) {
+        JCheckBox rv = new JCheckBox(label);
+        rv.setToolTipText(label);
+        return rv;
+    }
+    
     @Override
     protected void createOptionsUI() { 
         textHost = new JTextField();
@@ -98,10 +104,10 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         ftfFailDir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         checkEnable = new JCheckBox(_("Enable batch printer port"));
-        checkEnableSuccessDir = new JCheckBox(_("Save successfully submitted jobs to the following directory:"));
-        checkEnableFailDir = new JCheckBox(_("Save unsuccessfully submitted jobs to the following directory:"));
-        checkEnableMailer = new JCheckBox(_("Enable support for @@mailrecipient@@ tag"));
-        checkEnableFailMail = new JCheckBox(_("Send unsuccessfully submitted jobs to the following e-mail address:"));
+        checkEnableSuccessDir = createCheckBox(_("Save successfully submitted jobs to the following directory:"));
+        checkEnableFailDir = createCheckBox(_("Save unsuccessfully submitted jobs to the following directory:"));
+        checkEnableMailer = createCheckBox(_("Enable support for @@mailrecipient@@ tag"));
+        checkEnableFailMail = createCheckBox(_("Send unsuccessfully submitted jobs to the following e-mail address:"));
         
         comboServer = new JComboBox();
         comboIdentity = new JComboBox();
