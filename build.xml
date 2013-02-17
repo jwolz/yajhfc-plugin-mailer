@@ -43,11 +43,7 @@
 		<!-- Find out if we have valid, precompiled translations -->
 		<uptodate property="i18n.havePrecompiled">
 			<srcfiles dir="i18n" includes="*_*.po"/>
-			<!-- changed to .properties <compositemapper>
-				<mapper type="glob" from="*.po" to="bin/yajhfc/phonebook/outlook/i18n/*.class" />
-				<mapper type="glob" from="*.po" to="bin/yajhfc/phonebook/outlook/i18n/*$1.class" />
-			</compositemapper> -->
-			<mapper type="glob" from="*.po" to="bin/yajhfc/pdf/i18n/*.properties" />
+			<mapper type="glob" from="*.po" to="bin/yajhfc/send/email/i18n/*.properties" />
 		</uptodate>
 		
 		<!-- Create the time stamp -->
@@ -75,14 +71,14 @@
 	</target>
 
 	<target name="i18n" unless="i18n.havePrecompiled" depends="init" description="compile the translations">
-		<mkdir dir="i18n/bin/yajhfc/pdf/i18n"/>
+		<mkdir dir="i18n/bin/yajhfc/send/email/i18n"/>
 		<apply executable="${gettext-path}/msgcat" dir="i18n" parallel="false">
 			
 			<arg value="--properties-output"/>
 			<srcfile/>
 			
 			<fileset dir="i18n" includes="*_*.po"/>
-			<mapper type="glob" id="properties-out" from="*.po" to="i18n/bin/yajhfc/pdf/i18n/*.properties" />
+			<mapper type="glob" id="properties-out" from="*.po" to="i18n/bin/yajhfc/send/email/i18n/*.properties" />
 			<redirector>
 			   <outputmapper refid="properties-out"/>
 			</redirector>
@@ -122,7 +118,7 @@
 	<target name="dist" depends="compile,i18n" description="generate the distribution" >
 		<jar jarfile="${jar-output}" manifest="${build}/MANIFEST.MF">
 			<fileset dir="${build}" includes="yajhfc/**,com/**"/>
-			<!-- <fileset dir="i18n/bin" includes="**/*.class,**/*.properties"/> -->
+			<fileset dir="i18n/bin" includes="**/*.class,**/*.properties"/>
 			<fileset dir="${jar-extra}"/>
 		</jar>
 		

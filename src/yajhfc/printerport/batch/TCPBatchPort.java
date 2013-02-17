@@ -3,7 +3,7 @@
  */
 package yajhfc.printerport.batch;
 
-import static yajhfc.send.email.EntryPoint._;
+import static yajhfc.send.email.i18n.Msgs._;
 
 import java.io.IOException;
 import java.net.Socket;

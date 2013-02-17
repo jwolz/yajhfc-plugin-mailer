@@ -17,7 +17,7 @@
  */
 package yajhfc.send.email;
 
-import static yajhfc.send.email.EntryPoint._;
+import static yajhfc.send.email.i18n.Msgs._;
 import info.clearthought.layout.TableLayout;
 
 import java.awt.Dialog;

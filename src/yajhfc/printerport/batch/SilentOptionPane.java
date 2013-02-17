@@ -4,7 +4,7 @@ import java.awt.Window;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import yajhfc.send.email.EntryPoint;
+import yajhfc.send.email.i18n.Msgs;
 import yajhfc.ui.swing.SwingYajOptionPane;
 
 /**
@@ -29,7 +29,7 @@ public class SilentOptionPane extends SwingYajOptionPane {
 
     @Override
     public void showExceptionDialog(String message, Exception exc) {
-        showExceptionDialog(EntryPoint._("Error"), message, exc);
+        showExceptionDialog(Msgs._("Error"), message, exc);
     }
 
     @Override
