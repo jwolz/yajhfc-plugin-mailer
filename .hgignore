@@ -1,0 +1,7 @@
+
+syntax: regexp
+\.mo$
+syntax: regexp
+^i18n/bin$
+syntax: regexp
+^build$

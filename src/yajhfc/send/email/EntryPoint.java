@@ -14,6 +14,8 @@ import yajhfc.printerport.batch.BatchPrinterOptions;
 import yajhfc.printerport.batch.TCPBatchPort;
 import yajhfc.send.SendControllerMailer;
 
+import static yajhfc.send.email.i18n.Msgs._;
+
 /**
  * Example initialization class for a YajHFC plugin.
  * 
@@ -25,11 +27,6 @@ import yajhfc.send.SendControllerMailer;
 public class EntryPoint {
     private static final Logger log = Logger.getLogger(EntryPoint.class.getName());
     public static TCPBatchPort BATCH_THREAD = null;
-    
-    public static String _(String key) {
-        return key;
-    }
-    
     
 	/**
 	 * Plugin initialization method.
