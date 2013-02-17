@@ -26,7 +26,7 @@ import yajhfc.util.MsgBundle;
  *
  */
 public class Msgs {
-    public static final MsgBundle msgBundle  = new MsgBundle("yajhfc.send.email.i18n.Messages");
+    public static final MsgBundle msgBundle  = new MsgBundle("yajhfc.send.email.i18n.Messages", Msgs.class.getClassLoader());
     
     /**
      * Returns the translation of key. If no translation is found, the
