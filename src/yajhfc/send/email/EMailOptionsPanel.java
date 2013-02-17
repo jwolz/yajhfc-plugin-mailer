@@ -120,17 +120,17 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         checkAuth = new JCheckBox(_("Use authentication"));
 
         double[][] dLay = {
-                {OptionsWin.border, 0.25, OptionsWin.border, 0.125, OptionsWin.border, 0.125, TableLayout.FILL, OptionsWin.border},
+                {OptionsWin.border, 0.4, OptionsWin.border, 0.2, OptionsWin.border, 0.2, TableLayout.FILL, OptionsWin.border},
                 {OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.FILL, OptionsWin.border}
         };
         setLayout(new TableLayout(dLay));
 
         Utils.addWithLabel(this, textHost, _("Server host name:"), "1,2,f,c");
         Utils.addWithLabel(this, textPort, _("Port:"), "3,2,f,c");
-        add(checkSSL, "5,2,l,c");
+        add(checkSSL, "5,2,6,2,l,c");
 
         add(checkAuth, "1,4,l,c");
-        add(checkTLS, "3,4,5,4,l,c");
+        add(checkTLS, "3,4,6,4,l,c");
         JLabel lblUser = Utils.addWithLabel(this, textUser, _("User name:"), "1,7,f,c");
         JLabel lblPass = Utils.addWithLabel(this, passwordField, _("Password:"), "3,7,5,7,f,c");
         add(new JButton(testAction), "1,9,f,f");
