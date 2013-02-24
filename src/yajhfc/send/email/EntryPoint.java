@@ -72,8 +72,8 @@ public class EntryPoint {
 				getBatchPrintOptions().storeToProperties(p);
 			}
 		});
-
-		SendControllerMailer.INSTANCE = new EMailMailer();
+		
+		EMailMailer.install();
 		
 		reopenBatchThread();
 		return true;

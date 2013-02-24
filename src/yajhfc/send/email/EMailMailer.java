@@ -35,7 +35,11 @@ import com.sun.mail.smtp.SMTPTransport;
  *
  */
 public class EMailMailer extends SendControllerMailer {
-
+	
+	static void install() {
+		SendControllerMailer.INSTANCE = new EMailMailer();
+	}
+	
     public static String getSenderName(SenderIdentity id) {
         String fromName = NameRule.GIVENNAME_NAME.applyRule(id);
         if (fromName.length() > 0) {
@@ -51,8 +55,9 @@ public class EMailMailer extends SendControllerMailer {
         }
     }
     
-    protected EMailOptions theOptions;
-
+    protected EMailOptions theOptions = null;
+	protected MessageFormat attachmentNameFormat = new MessageFormat("doc_{0,date,yyyy-MM-dd_HH-mm-ss}.pdf");
+	
     public EMailMailer() {
         super();
     }
@@ -142,7 +147,7 @@ public class EMailMailer extends SendControllerMailer {
 
     @Override
     public MessageFormat getAttachmentNameFormat() {
-        return new MessageFormat("doc_{0,date,yyyy-MM-dd_HH-mm-ss}.pdf");
+        return attachmentNameFormat;
     }
 
     @Override
