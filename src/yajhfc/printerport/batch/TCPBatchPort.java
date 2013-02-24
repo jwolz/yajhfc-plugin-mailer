@@ -113,14 +113,15 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
 
             boolean mailSuccess = false;
             if (bpo.enableMailer && mailRecipients.size()>0) {
-                if (SendControllerMailer.INSTANCE != null)
+                if (SendControllerMailer.isAvailable())
                     try {
                         log.info("Sending mail to: " + mailRecipients);
-                        SendControllerMailer.INSTANCE.mailToRecipients(sendController, mailRecipients);
-                        mailSuccess = true;
+                        mailSuccess = SendControllerMailer.getInstance().mailToRecipients(sendController, mailRecipients);
                         log.info("Mail sent successfully.");
                     } catch (MailException e) {
                         dialogs.showExceptionDialog("Error sending mail to " + mailRecipients, e);
+                        if (archiver != null)
+                            archiver.saveFaxAsError();
                     }
                 else
                     log.severe("Error: Cannot send mail: SendControllerMailer not available!");
