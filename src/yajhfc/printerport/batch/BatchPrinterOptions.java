@@ -21,7 +21,7 @@ public class BatchPrinterOptions extends AbstractFaxOptions {
     
     public boolean enableMailer = true;
     public String subject = "Mailed Fax";
-    public String comment = "This document has been printed to the YajHFC batch fax printer.";
+    public String comment = "This document has been printed to the YajHFC batch fax printer.\n\nHave fun!";
     
     public boolean enableSuccessDir = false;
     public String successDir = "";
@@ -34,6 +34,8 @@ public class BatchPrinterOptions extends AbstractFaxOptions {
     public int serverID = -1;
     public int identityID = -1;
     
+    public boolean enableBCC = false;
+    public String bccAddress = "";
     
     public Server getServer() {
         Server server = ServerManager.getDefault().getServerByID(serverID);

@@ -12,7 +12,6 @@ import yajhfc.plugin.PluginUI;
 import yajhfc.printerport.batch.BatchPortOptionsPanel;
 import yajhfc.printerport.batch.BatchPrinterOptions;
 import yajhfc.printerport.batch.TCPBatchPort;
-import yajhfc.send.SendControllerMailer;
 
 import static yajhfc.send.email.i18n.Msgs._;
 

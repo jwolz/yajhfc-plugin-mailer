@@ -15,17 +15,18 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import yajhfc.file.FileUtils;
 import yajhfc.file.textextract.FaxnumberExtractor;
 import yajhfc.launch.Launcher2;
 import yajhfc.phonebook.convrules.DefaultPBEntryFieldContainer;
 import yajhfc.printerport.ListenThread;
 import yajhfc.send.SendController;
 import yajhfc.send.SendControllerListener;
-import yajhfc.send.SendControllerMailer;
-import yajhfc.send.SendControllerMailer.MailException;
 import yajhfc.send.SendFaxArchiver;
 import yajhfc.send.StreamTFLItem;
 import yajhfc.send.email.EntryPoint;
+import yajhfc.send.email.MailException;
+import yajhfc.send.email.YajMailer;
 
 /**
  * @author jonas
@@ -70,10 +71,21 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
 
             SendController sendController = new SendController(bpo.getServer(), dialogs, false, null);
             sendController.setIdentity(bpo.getIdentity());
-            sendController.setSubject(bpo.subject);
-            sendController.setComment(bpo.comment);
-            sendController.getFiles().add(new StreamTFLItem(sock.getInputStream(), getPrinterSockText()));
+            //sendController.setSubject(bpo.subject);
+            //sendController.setComment(bpo.comment);
+            StreamTFLItem document = new StreamTFLItem(sock.getInputStream(), getPrinterSockText());
+            sendController.getFiles().add(document);
             sendController.addSendControllerListener(this);
+            
+            try {
+                String subject = FileUtils.extractTitleFromPSFile(document.getPreviewFilename().file);
+                if (subject != null) {
+                    sendController.setSubject(subject);
+                }
+            } catch (Exception e1) {
+                log.log(Level.WARNING, "Error extracting title from document.", e1);
+            }
+            
 
             SendFaxArchiver archiver = null;
             if (bpo.enableSuccessDir || bpo.enableFailDir || bpo.enableFailMail) {
@@ -91,7 +103,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                 int num;
                 if (bpo.enableMailer) {
                     mailRecipients = new ArrayList<String>();
-                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), SendControllerMailer.getDefaultMailPattern());
+                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), YajMailer.getDefaultMailPattern());
                     num = extractor.extractFromMultipleDocuments(sendController.getFiles(), faxRecipients, mailRecipients);
                 } else {
                     FaxnumberExtractor extractor = new FaxnumberExtractor();
@@ -113,11 +125,23 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
 
             boolean mailSuccess = false;
             if (bpo.enableMailer && mailRecipients.size()>0) {
-                if (SendControllerMailer.isAvailable())
+                if (YajMailer.isAvailable())
                     try {
                         log.info("Sending mail to: " + mailRecipients);
-                        mailSuccess = SendControllerMailer.getInstance().mailToRecipients(sendController, mailRecipients);
-                        log.info("Mail sent successfully.");
+                        YajMailer mailer = YajMailer.getInstance();
+                        mailer.initializeFromSendController(sendController);
+                        mailer.setToAddresses(mailRecipients);
+                        mailer.setSubject(bpo.subject);
+                        mailer.setBody(bpo.comment);
+                        if (bpo.enableBCC) {
+                            mailer.setBccAddresses(bpo.bccAddress);
+                        }
+                        mailSuccess = mailer.sendMail();
+                        if (mailSuccess)
+                            log.info("Mail sent successfully.");
+                        else
+                            log.info("Mail sent unsuccessfully.");
+                        
                     } catch (MailException e) {
                         dialogs.showExceptionDialog("Error sending mail to " + mailRecipients, e);
                         if (archiver != null)

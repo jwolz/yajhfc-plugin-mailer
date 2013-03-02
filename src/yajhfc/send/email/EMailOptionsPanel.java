@@ -22,7 +22,6 @@ import info.clearthought.layout.TableLayout;
 
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
-import java.util.Collections;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -91,7 +90,11 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
                                             "User name for auth:  " + eo.user + "\n";
                             
                             EMailMailer mailer = new EMailMailer(eo);
-                            success = mailer.mailToRecipients(_("YajHFC test mail"), text, Collections.singletonList(recipient), null, null, id);
+                            mailer.setSubject(_("YajHFC test mail"));
+                            mailer.setBody(text);
+                            mailer.setToAddresses(recipient);
+                            mailer.setFromIdentity(id);
+                            success = mailer.sendMail();
                         } catch (Exception e1) {
                             showExceptionDialog(_("Error sending the message:"), e1);
                         }

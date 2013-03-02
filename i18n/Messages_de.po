@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: YajHFC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-17 10:40+0100\n"
-"PO-Revision-Date: 2013-02-17 10:49+0100\n"
+"PO-Revision-Date: 2013-02-17 13:18+0100\n"
 "Last-Translator: Jonas Wolz <jonas.wolz@freenet.de>\n"
 "Language-Team: DE <jonas@yajhfc.de>\n"
 "Language: \n"
@@ -19,15 +19,15 @@ msgstr ""
 
 #: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:100
 msgid "Enable batch printer port"
-msgstr ""
+msgstr "Batch-Druckeranschluß aktivieren"
 
 #: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:101
 msgid "Save successfully submitted jobs to the following directory:"
-msgstr ""
+msgstr "Erfolgreich weitergegebene Jobs in folgendem Verzeichnis ablegen:"
 
 #: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:102
 msgid "Save unsuccessfully submitted jobs to the following directory:"
-msgstr ""
+msgstr "Nicht erfolgreich weitergegebene Jobs in folgendem Verzeichnis ablegen:"
 
 #: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:103
 msgid "Enable support for @@mailrecipient@@ tag"
