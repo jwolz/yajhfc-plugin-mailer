@@ -29,6 +29,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -45,6 +46,7 @@ import yajhfc.options.PanelTreeNode;
 import yajhfc.options.ServerSettingsPanel;
 import yajhfc.send.email.EntryPoint;
 import yajhfc.server.ServerOptions;
+import yajhfc.util.ClipboardPopup;
 import yajhfc.util.ComponentEnabler;
 import yajhfc.util.IntVerifier;
 import yajhfc.util.WrapperComboBoxModel;
@@ -55,11 +57,11 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         super(false);
     }
 
-    JTextField textHost, textPort, textSubject, textFailMail;
+    JTextField textHost, textPort, textSubject, textFailMail, textBccMail;
     JTextArea textComment;
     FileTextField ftfSuccessDir, ftfFailDir;
     
-    JCheckBox checkEnable, checkEnableSuccessDir, checkEnableFailDir, checkEnableMailer, checkEnableFailMail;
+    JCheckBox checkEnable, checkEnableSuccessDir, checkEnableFailDir, checkEnableMailer, checkEnableFailMail, checkEnableBcc, checkBccExactCopy;
     
     JComboBox comboServer, comboIdentity;
 
@@ -91,12 +93,19 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
     @Override
     protected void createOptionsUI() { 
         textHost = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textHost);
         textPort = new JTextField();
         textPort.setInputVerifier(new IntVerifier(1,65535));
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textPort);
         textSubject = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textSubject);
         textComment = new JTextArea();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textComment);
         textComment.setFont(new Font("DialogInput", Font.PLAIN, 12));
         textFailMail = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textFailMail);
+        textBccMail = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textBccMail);
         
         ftfSuccessDir = new FileTextField();
         ftfSuccessDir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -108,6 +117,8 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         checkEnableFailDir = createCheckBox(_("Save unsuccessfully submitted jobs to the following directory:"));
         checkEnableMailer = createCheckBox(_("Enable support for @@mailrecipient@@ tag"));
         checkEnableFailMail = createCheckBox(_("Send unsuccessfully submitted jobs to the following e-mail address:"));
+        checkEnableBcc = createCheckBox(_("Send a copy of all sent mails to:"));
+        checkBccExactCopy = createCheckBox(_("Send exact copy (don't include log)"));
         
         comboServer = new JComboBox();
         comboIdentity = new JComboBox();
@@ -117,8 +128,11 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
                 {OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border,
                     TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border,
                     TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border,
-                    TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border,
-                    TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.FILL, OptionsWin.border}
+                    TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border*2,
+                    TableLayout.PREFERRED, OptionsWin.border, // Enable mailer
+                    TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, 
+                    TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, 
+                    TableLayout.PREFERRED, TableLayout.FILL, OptionsWin.border}
         };
         setLayout(new TableLayout(dLay));
 
@@ -126,8 +140,8 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         JLabel lblHost = Utils.addWithLabel(this, textHost, _("Bind address:"), "1,4,f,c");
         JLabel lblPort = Utils.addWithLabel(this, textPort, _("Port:"), "3,4,f,c");
         
-        Utils.addWithLabel(this, comboServer, _("Server:"), "1,7,3,7,f,c");
-        Utils.addWithLabel(this, comboIdentity, _("Identity:"), "5,7,7,7,f,c");
+        JLabel labelServer = Utils.addWithLabel(this, comboServer, _("Server:"), "1,7,3,7,f,c");
+        JLabel labelIdentity = Utils.addWithLabel(this, comboIdentity, _("Identity:"), "5,7,7,7,f,c");
         
         add(checkEnableSuccessDir, "1,9,7,9,l,c");
         add(ftfSuccessDir, "1,10,7,10,f,f");
@@ -137,16 +151,24 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         add(checkEnableFailMail, "5,12,7,12,l,c");
         add(textFailMail, "5,13,7,13,f,f");
         
+        add(new JSeparator(), "0,14,8,14,f,c");
         
         add(checkEnableMailer, "1,15,7,15,l,c");
-        JLabel lblSubject = Utils.addWithLabel(this, textSubject, _("Subject:"), "1,18,7,18,f,c");
-        JLabel lblComment = Utils.addWithLabel(this, new JScrollPane(textComment), _("Mail text:"), "1,21,7,21,f,f");
+        add(checkEnableBcc, "1,17,7,17,l,c");
+        add(textBccMail, "1,18,3,18,f,f");
+        add(checkBccExactCopy, "5,18,7,18,l,c");
+        JLabel lblSubject = Utils.addWithLabel(this, textSubject, _("Subject:"), "1,21,7,21,f,c");
+        JLabel lblComment = Utils.addWithLabel(this, new JScrollPane(textComment), _("Mail text:"), "1,24,7,24,f,f");
 
-        ComponentEnabler.installOn(checkEnable, true, lblHost, lblPort, textHost, textPort, comboServer, comboIdentity);
-        ComponentEnabler.installOn(checkEnableMailer, true, lblSubject, lblComment, textSubject, textComment);
-        ComponentEnabler.installOn(checkEnableFailDir, true, ftfFailDir);
-        ComponentEnabler.installOn(checkEnableSuccessDir, true, ftfSuccessDir);
-        ComponentEnabler.installOn(checkEnableFailMail, true, textFailMail);
+        ComponentEnabler ceGlobal = ComponentEnabler.installOn(checkEnable, true, lblHost, lblPort, textHost, textPort, comboServer, labelServer, comboIdentity, labelIdentity, checkEnableMailer, checkEnableFailDir, checkEnableFailMail, checkEnableSuccessDir);
+        ComponentEnabler ceMailer = ComponentEnabler.installOn(checkEnableMailer, true, lblSubject, lblComment, textSubject, textComment, checkEnableBcc);
+        ComponentEnabler ceFailDir = ComponentEnabler.installOn(checkEnableFailDir, true, ftfFailDir);
+        ComponentEnabler ceSuccDir = ComponentEnabler.installOn(checkEnableSuccessDir, true, ftfSuccessDir);
+        ComponentEnabler ceFailMail = ComponentEnabler.installOn(checkEnableFailMail, true, textFailMail);
+        ComponentEnabler ceBcc = ComponentEnabler.installOn(checkEnableBcc, true, textBccMail, checkBccExactCopy);
+        
+        ceMailer.setChilds(ceBcc);
+        ceGlobal.setChilds(ceMailer,ceFailDir,ceSuccDir,ceFailMail);
     }
 
     @Override
@@ -201,6 +223,7 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         textSubject.setText(bpo.subject);
         textComment.setText(bpo.comment);
         textFailMail.setText(bpo.failRecipient);
+        textBccMail.setText(bpo.bccAddress);
         
         ftfFailDir.setText(bpo.failDir);
         ftfSuccessDir.setText(bpo.successDir);
@@ -210,6 +233,8 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         checkEnableMailer.setSelected(bpo.enableMailer);
         checkEnableSuccessDir.setSelected(bpo.enableSuccessDir);
         checkEnableFailMail.setSelected(bpo.enableFailMail);
+        checkEnableBcc.setSelected(bpo.enableBCC);
+        checkBccExactCopy.setSelected(bpo.bccExactCopy);
         
         selServer = bpo.getServer().getOptions();
         selIdentity = bpo.getIdentity();
@@ -226,6 +251,7 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         bpo.subject = textSubject.getText();
         bpo.comment = textComment.getText();
         bpo.failRecipient = textFailMail.getText();
+        bpo.bccAddress = textBccMail.getText();
         
         bpo.failDir = ftfFailDir.getText();
         bpo.successDir = ftfSuccessDir.getText();
@@ -235,6 +261,8 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         bpo.enableMailer = checkEnableMailer.isSelected();
         bpo.enableSuccessDir = checkEnableSuccessDir.isSelected();
         bpo.enableFailMail = checkEnableFailMail.isSelected();
+        bpo.enableBCC = checkEnableBcc.isSelected();
+        bpo.bccExactCopy = checkBccExactCopy.isSelected();
         
         if (combosInitialized) {
             bpo.identityID = getSelIdentity().id;
@@ -274,6 +302,14 @@ public class BatchPortOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
             if (!textFailMail.getText().contains("@")) {
                 JOptionPane.showMessageDialog(this, _("Please enter a e-mail address!"));
                 optionsWin.focusComponent(textFailMail);
+                return false;
+            }
+        }
+        
+        if (checkEnableBcc.isSelected()) {
+            if (!textBccMail.getText().contains("@")) {
+                JOptionPane.showMessageDialog(this, _("Please enter a e-mail address!"));
+                optionsWin.focusComponent(textBccMail);
                 return false;
             }
         }

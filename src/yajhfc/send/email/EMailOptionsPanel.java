@@ -37,6 +37,7 @@ import yajhfc.SenderIdentity;
 import yajhfc.Utils;
 import yajhfc.options.AbstractOptionsPanel;
 import yajhfc.options.OptionsWin;
+import yajhfc.util.ClipboardPopup;
 import yajhfc.util.ComponentEnabler;
 import yajhfc.util.ExcDialogAbstractAction;
 import yajhfc.util.IntVerifier;
@@ -112,9 +113,12 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         };
 
         textHost = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textHost);
         textPort = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textPort);
         textPort.setInputVerifier(new IntVerifier(1,65535));
         textUser = new JTextField();
+        ClipboardPopup.DEFAULT_POPUP.addToComponent(textUser);
 
         passwordField = new JPasswordField();
 

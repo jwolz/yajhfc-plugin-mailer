@@ -9,12 +9,15 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import yajhfc.DateKind;
+import yajhfc.Utils;
 import yajhfc.file.FileUtils;
 import yajhfc.file.textextract.FaxnumberExtractor;
 import yajhfc.launch.Launcher2;
@@ -133,7 +136,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                         mailer.setToAddresses(mailRecipients);
                         mailer.setSubject(bpo.subject);
                         mailer.setBody(bpo.comment);
-                        if (bpo.enableBCC) {
+                        if (bpo.enableBCC && bpo.bccExactCopy) {
                             mailer.setBccAddresses(bpo.bccAddress);
                         }
                         mailSuccess = mailer.sendMail();
@@ -142,13 +145,46 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                         else
                             log.info("Mail sent unsuccessfully.");
                         
+                        if (bpo.enableBCC && !bpo.bccExactCopy) {
+                            final String faxSubject = sendController.getSubject();
+                            
+                            StringBuilder newBody = new StringBuilder(_("The attached PDF has been mailed to the following recipient(s):")).append('\n');
+                            for (String recipient : mailer.getToAddresses()) {
+                                newBody.append("  ").append(recipient).append('\n');
+                            }
+                            newBody.append('\n');
+                            newBody.append(_("Subject:")).append(' ').append(mailer.getSubject()).append('\n');
+                            if (faxSubject != null && faxSubject.length() > 0) {
+                                newBody.append(_("Document title:")).append(' ').append(faxSubject).append('\n');
+                            }
+                            newBody.append(_("Time:")).append(' ').append(DateKind.DATE_AND_TIME.getFormat().format(mailer.getLastSendTime())).append('\n');
+                            newBody.append('\n');
+                            newBody.append(_("The original mail's body can be found in the attachment message.txt")).append('\n');
+                            newBody.append('\n');
+                            newBody.append(Utils._("Send log:")).append("\n")
+                                .append("-------------------------------------------------\n")
+                                .append(memHandler)
+                                .append('\n');
+
+                            String newSubject = _("Sent Mail");
+                            if (faxSubject != null && faxSubject.length() > 0) {
+                                newSubject = newSubject + " [" + faxSubject + "]";
+                            }
+                            
+                            mailer.addAttachment(mailer.getBody(), "message.txt");
+                            mailer.setSubject(newSubject);
+                            mailer.setBody(newBody.toString());
+                            mailer.setToAddresses(bpo.bccAddress);
+                            mailer.sendMail();
+                        }
                     } catch (MailException e) {
                         dialogs.showExceptionDialog("Error sending mail to " + mailRecipients, e);
                         if (archiver != null)
                             archiver.saveFaxAsError();
                     }
-                else
-                    log.severe("Error: Cannot send mail: SendControllerMailer not available!");
+                else {
+                    log.severe("Error: Cannot send mail: YajMailer not available!");
+                }
             }
             if (faxRecipients.size() > 0) {
                 DefaultPBEntryFieldContainer.parseCmdLineStrings(sendController.getNumbers(), faxRecipients);

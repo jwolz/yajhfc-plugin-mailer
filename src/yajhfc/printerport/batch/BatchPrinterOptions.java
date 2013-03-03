@@ -35,6 +35,7 @@ public class BatchPrinterOptions extends AbstractFaxOptions {
     public int identityID = -1;
     
     public boolean enableBCC = false;
+    public boolean bccExactCopy = false;
     public String bccAddress = "";
     
     public Server getServer() {
