@@ -3,12 +3,10 @@
  */
 package yajhfc.send.email;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -52,7 +50,7 @@ public class EMailMailer extends YajMailer {
     }
     
     protected EMailOptions theOptions = null;
-
+    protected Date lastSendTime = null;
 	
     public EMailMailer() {
         super();
@@ -63,6 +61,11 @@ public class EMailMailer extends YajMailer {
         this.theOptions = options;
     }
   
+    @Override
+    public Date getLastSendTime() {
+        return lastSendTime;
+    }
+    
     protected EMailOptions getOptions() {
         if (theOptions == null)
             return EntryPoint.getOptions();
@@ -125,11 +128,17 @@ public class EMailMailer extends YajMailer {
                 MimeMultipart mp = new MimeMultipart();
                 mp.addBodyPart(mbp1);
                 
-                for (Map.Entry<File,String> attachment : attachments.entrySet()) {
+                for (Attachment attachment : attachments) {
                     MimeBodyPart mbp2 = new MimeBodyPart();
-                    mbp2.attachFile(attachment.getKey());
-                    if (attachment.getValue() != null)
-                        mbp2.setFileName(attachment.getValue());
+                    if (attachment.file != null) {
+                        mbp2.attachFile(attachment.file);
+                    } else if (attachment.textContent != null) {
+                        mbp2.setText(attachment.textContent);
+                    }    
+                    if (attachment.fileName != null) {
+                        mbp2.setFileName(attachment.fileName);
+                    }
+                    //mbp2.setDisposition(Part.ATTACHMENT);
                     mp.addBodyPart(mbp2);
                 }
 
@@ -138,7 +147,7 @@ public class EMailMailer extends YajMailer {
                 msg.setText(body);
             }
 
-            msg.setSentDate(new Date());
+            msg.setSentDate(lastSendTime = new Date());
             msg.setHeader("X-Mailer", Utils.AppShortName + " " + Utils.AppVersion);
 
             SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
