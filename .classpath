@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/yajhfc"/>
 	<classpathentry kind="lib" path="/home/jonas/java/TableLayout-2007-04/TableLayout-bin-jdk1.5-2007-04-21.jar" sourcepath="/home/jonas/java/TableLayout-2007-04/TableLayout-src-2007-04-21.jar"/>
-	<classpathentry kind="lib" path="/data1/build/javamail-1.4.5/mail.jar"/>
+	<classpathentry kind="lib" path="/data1/build/javamail-1.4.7/mail.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/yajhfc-console"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
