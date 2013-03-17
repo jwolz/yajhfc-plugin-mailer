@@ -18,7 +18,9 @@ import java.util.logging.Logger;
 
 import yajhfc.DateKind;
 import yajhfc.Utils;
+import yajhfc.file.FileFormat;
 import yajhfc.file.FileUtils;
+import yajhfc.file.FormattedFile;
 import yajhfc.file.textextract.FaxnumberExtractor;
 import yajhfc.launch.Launcher2;
 import yajhfc.phonebook.convrules.DefaultPBEntryFieldContainer;
@@ -81,9 +83,12 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
             sendController.addSendControllerListener(this);
             
             try {
-                String subject = FileUtils.extractTitleFromPSFile(document.getPreviewFilename().file);
-                if (subject != null) {
-                    sendController.setSubject(subject);
+                final FormattedFile docFile = document.getPreviewFilename();
+                if (docFile.getFormat() == FileFormat.PostScript) {
+                    String subject = FileUtils.extractTitleFromPSFile(docFile.file);
+                    if (subject != null) {
+                        sendController.setSubject(subject);
+                    }
                 }
             } catch (Exception e1) {
                 log.log(Level.WARNING, "Error extracting title from document.", e1);
