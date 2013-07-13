@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Handler;
