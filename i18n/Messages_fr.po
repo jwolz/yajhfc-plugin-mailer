@@ -1,0 +1,190 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-03 11:18+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:115
+msgid "Enable batch printer port"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:116
+msgid "Save successfully submitted jobs to the following directory:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:117
+msgid "Save unsuccessfully submitted jobs to the following directory:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:118
+msgid "Enable support for @@mailrecipient@@ tag"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:119
+msgid "Send unsuccessfully submitted jobs to the following e-mail address:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:120
+msgid "Send a copy of all sent mails to:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:121
+msgid "Send exact copy (don't include log)"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:140
+msgid "Bind address:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:141
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:136
+msgid "Port:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:143
+msgid "Server:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:144
+msgid "Identity:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:160
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:156
+msgid "Subject:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:161
+msgid "Mail text:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:281
+msgid "Please enter a port between 1 and 65535!"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:287
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:295
+msgid "Please enter an existing directory!"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:303
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/BatchPortOptionsPanel.java:311
+msgid "Please enter a e-mail address!"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/SilentOptionPane.java:32
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:70
+msgid "Error"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:116
+msgid "Error: No recipients could be found in the specified documents."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:124
+msgid "Fatal: No recipients specified for fax, discarding print job."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:151
+msgid "The attached PDF has been mailed to the following recipient(s):"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:158
+msgid "Document title:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:160
+msgid "Time:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:162
+msgid "The original mail's body can be found in the attachment message.txt"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:164
+msgid "Send log:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:169
+msgid "Sent Mail"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/printerport/batch/TCPBatchPort.java:202
+msgid "Error: Invalid data specified for fax, discarding print job."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:61
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:110
+msgid "Test connection"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:70
+msgid ""
+"To send a mail, you have to specify a sender e-mail address in your sender "
+"identity under \"Cover Page & Identities\"."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:74
+msgid "Please enter the test mail's recipient:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:94
+msgid "YajHFC test mail"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:100
+msgid "Error sending the message:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:106
+msgid "Message sent successfully."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:111
+msgid "Sending test mail..."
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:125
+msgid "Use SSL"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:126
+msgid "Use TLS if available"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:127
+msgid "Use authentication"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:135
+msgid "Server host name:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:141
+msgid "User name:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EMailOptionsPanel.java:142
+msgid "Password:"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EntryPoint.java:56
+msgid "Batch fax printer port"
+msgstr ""
+
+#: /home/jonas/java/workspace/yajhfc-plugin-mail/src/yajhfc/send/email/EntryPoint.java:62
+msgid "SMTP settings"
+msgstr ""
