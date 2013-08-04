@@ -20,6 +20,7 @@ package yajhfc.send.email;
 import static yajhfc.send.email.i18n.Msgs._;
 import info.clearthought.layout.TableLayout;
 
+import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 
@@ -43,15 +44,18 @@ import yajhfc.util.ExcDialogAbstractAction;
 import yajhfc.util.IntVerifier;
 import yajhfc.util.ProgressDialog;
 import yajhfc.util.ProgressWorker;
+import yajhfc.util.URIClickListener;
 
 public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {   
-
+    private static final String INSTALL_CERT_URL="http://www.yajhfc.de/documentation/knowledge-base/139-install-ssl-certificate";
+    
+    
     public EMailOptionsPanel() {
         super(false);
     }
 
     JTextField textHost, textPort, textUser;
-    JCheckBox checkSSL, checkAuth, checkTLS;
+    JCheckBox checkSSL, checkAuth, checkTLS, checkIgnoreSSLVerification;
     Action testAction;
     JPasswordField passwordField;
 
@@ -125,10 +129,16 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         checkSSL = new JCheckBox(_("Use SSL"));
         checkTLS = new JCheckBox(_("Use TLS if available"));
         checkAuth = new JCheckBox(_("Use authentication"));
+        checkIgnoreSSLVerification = new JCheckBox(_("Ignore SSL/TLS certificate errors"));
+        
+        
+        JLabel linkLabel = new JLabel("<html><a href=\"" + INSTALL_CERT_URL + "\">" + _("Please click here if you want to use a self signed certificate for SSL/TLS") + "</a></html>");
+        linkLabel.addMouseListener(new URIClickListener(INSTALL_CERT_URL));
+        linkLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         double[][] dLay = {
                 {OptionsWin.border, 0.4, OptionsWin.border, 0.2, OptionsWin.border, 0.2, TableLayout.FILL, OptionsWin.border},
-                {OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.FILL, OptionsWin.border}
+                {OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.PREFERRED, OptionsWin.border, TableLayout.PREFERRED, TableLayout.FILL, OptionsWin.border}
         };
         setLayout(new TableLayout(dLay));
 
@@ -136,11 +146,15 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         Utils.addWithLabel(this, textPort, _("Port:"), "3,2,f,c");
         add(checkSSL, "5,2,6,2,l,c");
 
-        add(checkAuth, "1,4,l,c");
         add(checkTLS, "3,4,6,4,l,c");
-        JLabel lblUser = Utils.addWithLabel(this, textUser, _("User name:"), "1,7,f,c");
-        JLabel lblPass = Utils.addWithLabel(this, passwordField, _("Password:"), "3,7,5,7,f,c");
-        add(new JButton(testAction), "1,9,f,f");
+        
+        add(checkIgnoreSSLVerification, "1,4,1,4,l,c");
+        add(linkLabel, "1,6,6,6,f,c");
+        
+        add(checkAuth, "1,8,l,c");
+        JLabel lblUser = Utils.addWithLabel(this, textUser, _("User name:"), "1,11,f,c");
+        JLabel lblPass = Utils.addWithLabel(this, passwordField, _("Password:"), "3,11,5,11,f,c");
+        add(new JButton(testAction), "1,13,f,f");
 
         ComponentEnabler.installOn(checkAuth, true, lblUser, lblPass, textUser, passwordField);
     }
@@ -155,6 +169,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         eo.ssl = checkSSL.isSelected();
         eo.auth = checkAuth.isSelected();
         eo.tls = checkTLS.isSelected();
+        eo.trustAllHosts = checkIgnoreSSLVerification.isSelected();
     }
 
     private int getPort() {
@@ -178,6 +193,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
         checkSSL.setSelected(eo.ssl);
         checkAuth.setSelected(eo.auth);
         checkTLS.setSelected(eo.tls);
+        checkIgnoreSSLVerification.setSelected(eo.trustAllHosts);
     }
 
     /* (non-Javadoc)
