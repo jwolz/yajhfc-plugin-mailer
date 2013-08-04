@@ -14,6 +14,7 @@ public class EMailOptions extends AbstractFaxOptions {
     public boolean auth = false;
     public String user = "";
     public final Password password = new Password();
+    public boolean trustAllHosts = false;
 	
     public Properties toProperties() {
         Properties p = new Properties();
@@ -25,6 +26,10 @@ public class EMailOptions extends AbstractFaxOptions {
         
         p.put("mail.smtp.ssl.enable", ssl);
         p.put("mail.smtp.starttls.enable", tls);
+        
+        if (trustAllHosts)
+            p.put("mail.smtp.ssl.trust", "*");
+        
         return p;
     }
     

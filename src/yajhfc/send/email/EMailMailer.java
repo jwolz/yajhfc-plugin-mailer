@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.activation.CommandMap;
+import javax.activation.MailcapCommandMap;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -32,6 +34,20 @@ public class EMailMailer extends YajMailer {
 	
 	static void install() {
 		YajMailer.IMPLEMENTATION = EMailMailer.class;
+	}
+	
+	private static boolean fixed = false;
+	private static void fixCommandMap() {
+	    if (!fixed) {
+	        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+	        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+	        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+	        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+	        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+	        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+	        CommandMap.setDefaultCommandMap(mc);
+	        fixed = true;
+	    }
 	}
 	
     public static String getSenderName(SenderIdentity id) {
@@ -103,6 +119,8 @@ public class EMailMailer extends YajMailer {
         
         final EMailOptions eo = getOptions();
         try {
+            fixCommandMap();
+            
             Properties props = eo.toProperties();
             Session session = Session.getInstance(props, null);
             session.setDebug(Utils.debugMode);
