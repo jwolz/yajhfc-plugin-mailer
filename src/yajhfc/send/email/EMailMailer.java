@@ -23,6 +23,7 @@ import javax.mail.internet.MimeMultipart;
 import yajhfc.SenderIdentity;
 import yajhfc.Utils;
 import yajhfc.phonebook.convrules.NameRule;
+import yajhfc.plugin.PluginManager;
 
 import com.sun.mail.smtp.SMTPTransport;
 
@@ -38,6 +39,7 @@ public class EMailMailer extends YajMailer {
 	
 	private static boolean fixed = false;
 	private static void fixCommandMap() {
+	    Thread.currentThread().setContextClassLoader(PluginManager.pluginClassLoader);
 	    if (!fixed) {
 	        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
 	        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
