@@ -22,6 +22,7 @@ import javax.mail.internet.MimeMultipart;
 
 import yajhfc.SenderIdentity;
 import yajhfc.Utils;
+import yajhfc.VersionInfo;
 import yajhfc.phonebook.convrules.NameRule;
 import yajhfc.plugin.PluginManager;
 
@@ -168,7 +169,7 @@ public class EMailMailer extends YajMailer {
             }
 
             msg.setSentDate(lastSendTime = new Date());
-            msg.setHeader("X-Mailer", Utils.AppShortName + " " + Utils.AppVersion);
+            msg.setHeader("X-Mailer", VersionInfo.AppShortName + " " + VersionInfo.AppVersion);
 
             SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
             try {
