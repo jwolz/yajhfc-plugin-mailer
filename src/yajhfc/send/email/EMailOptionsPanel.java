@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import yajhfc.FaxOptions;
 import yajhfc.SenderIdentity;
 import yajhfc.Utils;
+import yajhfc.VersionInfo;
 import yajhfc.options.AbstractOptionsPanel;
 import yajhfc.options.OptionsWin;
 import yajhfc.util.ClipboardPopup;
@@ -86,7 +87,7 @@ public class EMailOptionsPanel extends AbstractOptionsPanel<FaxOptions> {
                     public void doWork() {
                         try {
                             String text = 
-                                    "This is a test e-mail message sent from " + Utils.AppShortName + " " + Utils.AppVersion + "\n\n" +
+                                    "This is a test e-mail message sent from " + VersionInfo.AppShortName + " " + VersionInfo.AppVersion + "\n\n" +
                                             "Settings used:\n" +
                                             "Server:              " + eo.hostname + ":" + eo.port + "\n" +
                                             "Use SSL?:            " + eo.ssl + "\n" +
