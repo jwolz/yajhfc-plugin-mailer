@@ -110,7 +110,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                 int num;
                 if (bpo.enableMailer) {
                     mailRecipients = new ArrayList<String>();
-                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), YajMailer.getDefaultMailPattern());
+                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), FaxnumberExtractor.getDefaultMailPattern());
                     num = extractor.extractFromMultipleDocuments(sendController.getFiles(), faxRecipients, mailRecipients);
                 } else {
                     FaxnumberExtractor extractor = new FaxnumberExtractor();
