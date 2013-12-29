@@ -72,7 +72,7 @@
 
 	<target name="i18n" unless="i18n.havePrecompiled" depends="init" description="compile the translations">
 		<mkdir dir="i18n/bin/yajhfc/send/email/i18n"/>
-		<apply executable="${gettext-path}/msgcat" dir="i18n" parallel="false">
+		<apply executable="${gettext-path}/msgcat" dir="i18n" parallel="false" failonerror="true" verbose="true">
 			
 			<arg value="--properties-output"/>
 			<srcfile/>
@@ -90,7 +90,7 @@
 		<fileset id="i18n.srcfiles" dir="${src}" includes="**/*.java"/>
 		<pathconvert pathsep="${line.separator}" property="i18n.srcfiles.lines" refid="i18n.srcfiles" />
 		
-		<apply executable="${gettext-path}/xgettext" dir="i18n" parallel="true" addsourcefile="false">
+		<apply executable="${gettext-path}/xgettext" dir="i18n" parallel="true" addsourcefile="false" failonerror="true" verbose="true">
 			
 			<arg value="-k_"/>
 			<arg value="--from-code=utf-8"/>
@@ -103,7 +103,7 @@
 			<fileset refid="i18n.srcfiles"/>
 			<mergemapper to="i18n/Messages.po"/>
 		</apply>
-		<apply executable="${gettext-path}/msgmerge" dir="i18n" parallel="false">
+		<apply executable="${gettext-path}/msgmerge" dir="i18n" parallel="false" failonerror="true" verbose="true">
 			
 			<arg value="-N"/>
 			<arg value="-U"/>
