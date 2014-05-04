@@ -106,17 +106,20 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
             // n.b.: All documents should have been added at this point
             List<String> mailRecipients = null;
             List<String> faxRecipients = new ArrayList<String>();
+            List<String> subjects = null;
             try {
                 int num;
                 if (bpo.enableMailer) {
                     mailRecipients = new ArrayList<String>();
-                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), FaxnumberExtractor.getDefaultMailPattern());
-                    num = extractor.extractFromMultipleDocuments(sendController.getFiles(), faxRecipients, mailRecipients);
+                    subjects = new ArrayList<String>();
+                    FaxnumberExtractor extractor = new FaxnumberExtractor(FaxnumberExtractor.getDefaultPattern(), FaxnumberExtractor.getDefaultMailPattern(), FaxnumberExtractor.getDefaultSubjectPattern());
+                    num = extractor.extractFromMultipleDocuments(sendController.getFiles(), faxRecipients, mailRecipients, subjects);
+                    num = num - subjects.size(); // Subjects are no recipients...
                 } else {
                     FaxnumberExtractor extractor = new FaxnumberExtractor();
                     num = extractor.extractFromMultipleDocuments(sendController.getFiles(), faxRecipients);
                 }
-                if (num == 0) {
+                if (num <= 0) {
                     log.warning(_("Error: No recipients could be found in the specified documents."));
                 }
             } catch (Exception e) {
@@ -130,6 +133,17 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                     archiver.saveFaxAsError();
             }
 
+            boolean mailUseSendControllerSubject = false;
+            if (subjects.size() > 0) {
+                mailUseSendControllerSubject = true;
+                
+                // Set subject to the last subject found
+                String subject = subjects.get(subjects.size()-1);
+                if (! FaxnumberExtractor.SUBJECT_DOCTITLE.equalsIgnoreCase(subject.trim())) {
+                    sendController.setSubject(subject);
+                }
+            }
+            
             boolean mailSuccess = false;
             if (bpo.enableMailer && mailRecipients.size()>0) {
                 if (YajMailer.isAvailable())
@@ -138,7 +152,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
                         YajMailer mailer = YajMailer.getInstance();
                         mailer.initializeFromSendController(sendController);
                         mailer.setToAddresses(mailRecipients);
-                        mailer.setSubject(bpo.subject);
+                        mailer.setSubject(mailUseSendControllerSubject ? sendController.getSubject() : bpo.subject);
                         mailer.setBody(bpo.comment);
                         if (bpo.enableBCC && bpo.bccExactCopy) {
                             mailer.setBccAddresses(bpo.bccAddress);
