@@ -134,7 +134,7 @@ public class TCPBatchPort extends ListenThread implements SendControllerListener
             }
 
             boolean mailUseSendControllerSubject = false;
-            if (subjects.size() > 0) {
+            if (subjects != null && subjects.size() > 0) {
                 mailUseSendControllerSubject = true;
                 
                 // Set subject to the last subject found
