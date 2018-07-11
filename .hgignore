@@ -5,3 +5,5 @@ syntax: regexp
 ^i18n/bin$
 syntax: regexp
 ^build$
+syntax: regexp
+\.po~$
